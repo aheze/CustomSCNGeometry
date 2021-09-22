@@ -134,11 +134,6 @@ scene.rootNode.addChildNode(node)
 
 - I noticed that you were trying to use 2 `SCNGeometrySource`s. The second one was to add color with `SCNGeometrySource.Semantic.color`, right? The simpler initializer that I used, [`init(vertices:)`](https://developer.apple.com/documentation/scenekit/scngeometrysource/2034708-init), defaults to [`.vertex`](https://developer.apple.com/documentation/scenekit/scngeometrysource/semantic/1522639-vertex). If you want per-vertex color or something, you'll probably need to go back to [`init(data:semantic:vectorCount:usesFloatComponents:componentsPerVector:bytesPerComponent:dataOffset:dataStride:)`](https://developer.apple.com/documentation/scenekit/scngeometrysource/1523320-init).
 - Try `sceneView.autoenablesDefaultLighting = true` for some better lighting
-- [Full demo playground here](https://github.com/aheze/CustomSCNGeometry)
-
-
-
-
 
 
 
@@ -146,3 +141,4 @@ scene.rootNode.addChildNode(node)
   [2]: https://i.stack.imgur.com/xg1Eb.png
   [3]: https://i.stack.imgur.com/27lsy.png
   [4]: https://i.stack.imgur.com/y3lv0.png
+
