@@ -54,7 +54,7 @@ let verticesConverted = vertices.map { SCNVector3($0.x, $0.y, $0.z) }
 let positionSource = SCNGeometrySource(vertices: verticesConverted)
 
 /// step 2
-let indices: [Int8] = [
+let indices: [UInt16] = [
     0, 1, 3,
     1, 2, 3,
     2, 0, 3,
