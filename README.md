@@ -12,7 +12,7 @@ According to the [documentation](https://developer.apple.com/documentation/scene
 
 **Let's start from step 1.** You want your custom geometry to be a 3D shape, right? You only have 2 vertices, though.
 
-```
+```swift
 let vertices: [Vertex] = [         /// what's `r`, `g`, `b` for btw? 
     Vertex(x: 0.0, y: 0.0, z: 0.0, r: 1.0, g: 0.0, b: 0.0),
     Vertex(x: 1.0, y: 0.0, z: 0.0, r: 0.0, g: 0.0, b: 1.0)
@@ -26,7 +26,7 @@ This will form a line...
 
 A common way of making 3D shapes is from triangles. Let's add 2 more vertices to make a pyramid.
 
-```
+```swift
 let vertices: [Vertex] = [
     Vertex(x: 0.0, y: 0.0, z: 0.0, r: 1.0, g: 0.0, b: 0.0), /// vertex 0
     Vertex(x: 1.0, y: 0.0, z: 0.0, r: 0.0, g: 0.0, b: 1.0), /// vertex 1
@@ -39,7 +39,7 @@ let vertices: [Vertex] = [
 
 Now, we need to connect the vertices into something that SceneKit can handle. In your current code, you convert `vertices` into `Data`, then use the [`init(data:semantic:vectorCount:usesFloatComponents:componentsPerVector:bytesPerComponent:dataOffset:dataStride:)`](https://developer.apple.com/documentation/scenekit/scngeometrysource/1523320-init) initializer.
 
-```
+```swift
 let vertexData = Data(
     bytes: vertices,
     count: MemoryLayout<Vertex>.size * vertices.count
@@ -58,14 +58,14 @@ let positionSource = SCNGeometrySource(
 
 This is very advanced and complicated. It's way easier with [`init(vertices:)`](https://developer.apple.com/documentation/scenekit/scngeometrysource/2034708-init).
 
-```
+```swift
 let verticesConverted = vertices.map { SCNVector3($0.x, $0.y, $0.z) } /// convert to `[SCNVector3]`
 let positionSource = SCNGeometrySource(vertices: verticesConverted)
 ```
 
 Now that you've got the `SCNGeometrySource`, it's **time for step 2** — connecting the vertices via `SCNGeometryElement`. In your current code, you use [`init(data:primitiveType:primitiveCount:bytesPerIndex:)`](https://developer.apple.com/documentation/scenekit/scngeometryelement/1522615-init), then pass in `nil`...
 
-```
+```swift
 let elements = SCNGeometryElement(
     data: nil,
     primitiveType: .point,
@@ -82,14 +82,14 @@ So how is each vertex represented by a `FixedWidthInteger`? Well, remember how y
 
 Since indices are always integers and positive, [`UInt16`](https://developer.apple.com/documentation/swift/uint16) should do fine (it conforms to `FixedWidthInteger`).
 
-```
+```swift
 /// pairs of 3 indices, each representing a vertex
 let indices: [UInt16] = [
-   ​0, 1, 3, /// front triangle
-   ​1, 2, 3, /// right triangle
-   ​2, 0, 3, /// back triangle
-   ​3, 0, 2, /// left triangle
-   ​0, 2, 1 /// bottom triangle
+    0, 1, 3, /// front triangle
+    1, 2, 3, /// right triangle
+    2, 0, 3, /// back triangle
+    3, 0, 2, /// left triangle
+    0, 2, 1 /// bottom triangle
 ]
 let element = SCNGeometryElement(indices: indices, primitiveType: .triangles)
 ```
@@ -100,19 +100,19 @@ The order here is very specific. By default, SceneKit only renders the front fac
 
 So to refer to the first triangle, you could say:
 
-- ​0, 1, 3
+- 0, 1, 3
 - 1, 3, 0
 - 3, 0, 1
 
 All are fine. Finally, **step 3** is super simple. Just combine the `SCNGeometrySource` and `SCNGeometryElement`.
 
-```
+```swift
 let geometry = SCNGeometry(sources: [positionSource], elements: [element])
 ```
 
 And that's it! Now that both your `SCNGeometrySource` and `SCNGeometryElement` are set up correctly, `lightingModel` will work properly.
 
-```
+```swift
 /// add some color
 let material = SCNMaterial()
 material.diffuse.contents = UIColor.orange
